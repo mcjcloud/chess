@@ -1,0 +1,8 @@
+{
+  "name": "chess",
+  "version": "0.0.0",
+  "description": "chess and more?",
+  "main": "index.js",
+  "author": "mcjcloud",
+  "license": "MIT"
+}
