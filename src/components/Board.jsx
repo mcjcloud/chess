@@ -1,15 +1,16 @@
 import React, { useCallback, useState } from "react"
 import styled from "styled-components"
-import useBoard from "../hooks/useBoard"
+import useBoard from "../hooks/use-board"
 import Square from "./Square"
 
 const Board = () => {
-  const { availableMoves, board } = useBoard()
+  const { availableMoves, board, movePiece } = useBoard()
   const [selectedMoves, setSelectedMoves] = useState([])
 
   const selectPiece = useCallback(
     (square) => {
       const moves = availableMoves(square)
+      console.log({ moves })
       setSelectedMoves(moves)
     },
     [availableMoves]
@@ -17,19 +18,26 @@ const Board = () => {
 
   return (
     <BoardWrapper>
-      {board && board.map((row, x) => {
+      {board && board.map((row, y) => {
         return (
-          <Row key={`row_${x}`}>
-            {row.map((piece, y) => {
+          <Row key={`row_${y}`}>
+            {row.map((piece, x) => {
+              const [src] = selectedMoves.find(([, m]) => m.x === x && m.y === y) ?? [undefined]
               return (
                 <Square
-                  key={`square_${y}`}
+                  key={`square_${x}`}
                   piece={piece}
-                  black={(x % 2 === 0 && y % 2 !== 0) || (x % 2 !== 0 && y % 2 === 0)}
-                  showPlaceholder={selectedMoves.includes({ x, y })}
+                  black={(y % 2 === 0 && x % 2 !== 0) || (y % 2 !== 0 && x % 2 === 0)}
+                  showPlaceholder={src}
                   handler={() => {
-                    console.log("clicked: ", { x, y })
-                    selectPiece({ x, y })
+                    if (src) {
+                      console.log("move piece: ", src, { x, y })
+                      movePiece(src, { x, y })
+                      setSelectedMoves([])
+                    } else {
+                      console.log("select piece: ", { x, y })
+                      selectPiece({ x, y })
+                    }
                   }}
                 />
               )

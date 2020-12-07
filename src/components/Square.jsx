@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 
-const Square = ({ black, piece = "  ", showPlaceholder = false, handler }) => {
+const Square = ({ black, piece = "  ", showPlaceholder, handler }) => {
   const Wrapper = black ? BlackSquare : WhiteSquare
   return (
     <Wrapper
