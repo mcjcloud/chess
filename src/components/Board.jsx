@@ -17,7 +17,7 @@ const Board = () => {
 
   return (
     <BoardWrapper>
-      {board?.squares && board.squares.map((row, x) => {
+      {board && board.map((row, x) => {
         return (
           <Row key={`row_${x}`}>
             {row.map((piece, y) => {
