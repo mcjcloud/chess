@@ -48,7 +48,6 @@ export const verticalMovesFromSquare = (board, square, lastMove) => {
       break
     }
   }
-  console.log({ verticalMoves })
   return verticalMoves
 }
 
@@ -90,6 +89,5 @@ export const horizontalMovesFromSquare = (board, square, lastMove) => {
       break
     }
   }
-  console.log({ horizontalMoves })
   return horizontalMoves
 }

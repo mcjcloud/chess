@@ -1,5 +1,9 @@
 import { useCallback, useState } from "react"
+import availableBishopMoves from "./availableBishopMoves"
+import availableKingMoves from "./availableKingMoves"
+import availableKnightMoves from "./availableKnightMoves"
 import availablePawnMoves from "./availablePawnMoves"
+import availableQueenMoves from "./availableQueenMoves"
 import availableRookMoves from "./availableRookMoves"
 
 // board model
@@ -26,11 +30,15 @@ const useBoard = () => {
     console.log({ board, src })
     const srcPiece = board[src.y][src.x]
     switch (srcPiece.charAt(1)) {
-      case "p": return availablePawnMoves(board, src)
-      case "r": return availableRookMoves(board, src)
+      case "p": return availablePawnMoves(board, src, lastMove)
+      case "r": return availableRookMoves(board, src, lastMove)
+      case "n": return availableKnightMoves(board, src, lastMove)
+      case "b": return availableBishopMoves(board, src, lastMove)
+      case "q": return availableQueenMoves(board, src, lastMove)
+      case "k": return availableKingMoves(board, src, lastMove)
       default: return []
     }
-  }, [board])
+  }, [board, lastMove])
 
   const movePiece = useCallback((src, dest) => {
     const moves = availableMoves(src)
