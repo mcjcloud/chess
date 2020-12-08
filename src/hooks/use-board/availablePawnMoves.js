@@ -9,7 +9,6 @@ const availablePawnMoves = (board, pawn, lastMove) => {
     { x: pawn.x, y: black ? pawn.y + 2 : pawn.y - 2 },
   ]
   for (let moveForward of moveForwards) {
-    console.log({ moveForward, board })
     if (!inBounds(moveForward)) {
       continue
     }
