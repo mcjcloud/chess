@@ -1,6 +1,6 @@
 import { inBounds } from "."
 
-const availableKnightMoves = (board, knight, lastMove) => {
+const availableKnightMoves = (board, knight) => {
   const black = board[knight.y][knight.x].startsWith("b")
   const knightMoves = []
   const moves = [

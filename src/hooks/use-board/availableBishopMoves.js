@@ -1,6 +1,6 @@
 import { inBounds } from "."
 
-const availableBishopMoves = (board, bishop, lastMove) => {
+const availableBishopMoves = (board, bishop) => {
   const black = board[bishop.y][bishop.x].startsWith("b")
   const xrBound = 8 - bishop.x
   const xlBound = bishop.x
@@ -15,7 +15,7 @@ const availableBishopMoves = (board, bishop, lastMove) => {
       if (empty || oppositePiece) {
         moves.push(move)
       }
-      if (!empty && !oppositePiece) {
+      if (!empty) {
         break
       }
     }
@@ -29,7 +29,7 @@ const availableBishopMoves = (board, bishop, lastMove) => {
       if (empty || oppositePiece) {
         moves.push(move)
       }
-      if (!empty && !oppositePiece) {
+      if (!empty) {
         break
       }
     }
@@ -43,7 +43,7 @@ const availableBishopMoves = (board, bishop, lastMove) => {
       if (empty || oppositePiece) {
         moves.push(move)
       }
-      if (!empty && !oppositePiece) {
+      if (!empty) {
         break
       }
     }
@@ -57,7 +57,7 @@ const availableBishopMoves = (board, bishop, lastMove) => {
       if (empty || oppositePiece) {
         moves.push(move)
       }
-      if (!empty && !oppositePiece) {
+      if (!empty) {
         break
       }
     }

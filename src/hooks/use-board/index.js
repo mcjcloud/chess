@@ -29,6 +29,8 @@ const useBoard = () => {
   const [bkMoved, setBKMoved] = useState(false)
   const [bqrMoved, setBQRMoved] = useState(false)
   const [bkrMoved, setBKRMoved] = useState(false)
+  const [whiteInCheck, setWhiteInCheck] = useState(false)
+  const [blackInCheck, setBlackInCheck] = useState(false)
 
   const availableMoves = useCallback((src) => {
     const srcPiece = board[src.y][src.x]
@@ -45,7 +47,6 @@ const useBoard = () => {
 
   const movePiece = useCallback((src, dest) => {
     const moves = availableMoves(src)
-    console.log({ src, dest, moves })
     if (moves.some(([, m]) => m.x === dest.x && m.y === dest.y)) {
       // check if the piece moved is the king from the king square or rook from the rook square
       if (src.y === 0 && src.x === 4) {
@@ -88,6 +89,8 @@ const useBoard = () => {
       brd[src.y][src.x] = "  "
 
       setBoard(brd)
+      setWhiteInCheck(inCheck(brd, "wk"))
+      setBlackInCheck(inCheck(brd, "bk"))
     }
   }, [board, availableMoves])
 
@@ -95,6 +98,8 @@ const useBoard = () => {
     availableMoves,
     board,
     movePiece,
+    whiteInCheck,
+    blackInCheck,
   }  
 }
 export default useBoard
@@ -105,4 +110,67 @@ export const inBounds = ({ x, y }) => {
 
 export const isEmpty = (board, ...squares) => {
   return squares.every(s => board[s.y][s.x] === "  ")
+}
+
+const inCheck = (board, code) => {
+  if (!code || !code.endsWith("k")) {
+    return false
+  }
+  const black = code === "bk"
+
+  // find the king's coordinates
+  let king
+  for (const y in board) {
+    for (const x in board[y]) {
+      if (board[y][x] === code) {
+        king = { x: +x, y: +y }
+        break
+      }
+    }
+  }
+  if (!king) {
+    return false
+  }
+
+  // check diagonal moves
+  const diagonalMoves = availableBishopMoves(board, king)
+  for (let [, move] of diagonalMoves) {
+    if (board[move.y][move.x] === (black ? "wb" : "bb") || board[move.y][move.x] === (black ? "wq" : "bq")) {
+      return true
+    }
+    
+    if (black && move.y === king.y + 1 && (move.x === king.x + 1 || move.x === king.x - 1) && board[move.y][move.x] === "wp") {
+      return true
+    }
+    if (!black && move.y === king.y - 1 && (move.x === king.x + 1 || move.x === king.x - 1) && board[move.y][move.x] === "bp") {
+      return true
+    }
+    
+    if ((move.y === king.y + 1 || move.y === king.y - 1) && (move.x === king.x + 1 || move.x === king.x - 1) && board[move.y][move.x] === (black ? "wk" : "bk")) {
+      return true
+    }
+  }
+  
+  // check horizontal moves
+  const straightMoves = availableRookMoves(board, king)
+  for (let [, move] of straightMoves) {
+    if (board[move.y][move.x] === (black ? "wr" : "br") || board[move.y][move.x] === (black ? "wq" : "bq")) {
+      return true
+    }
+    
+    const offY = (move.y === king.y + 1 || move.y === king.y - 1)
+    const offX = (move.x === king.x + 1 || move.x === king.x - 1)
+    if (((offX && !offY) || (!offX && offY)) && board[move.y][move.x] === (black ? "wk" : "bk")) {
+      return true
+    }
+  }
+
+  // check knight moves
+  const knightMoves = availableKnightMoves(board, king)
+  for (let [, move] of knightMoves) {
+    if (board[move.y][move.x] === (black ? "wn" : "bn")) {
+      return true
+    }
+  }
+  return false
 }

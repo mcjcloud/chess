@@ -1,14 +1,14 @@
 import { inBounds } from "."
 
-const availableRookMoves = (board, rook, lastMove) => {
+const availableRookMoves = (board, rook) => {
   return [
-    ...verticalMovesFromSquare(board, rook, lastMove),
-    ...horizontalMovesFromSquare(board, rook, lastMove),
+    ...verticalMovesFromSquare(board, rook),
+    ...horizontalMovesFromSquare(board, rook),
   ]
 }
 export default availableRookMoves
 
-export const verticalMovesFromSquare = (board, square, lastMove) => {
+export const verticalMovesFromSquare = (board, square) => {
   const verticalMoves = []
   const black = board[square.y][square.x].startsWith("b")
 
@@ -51,7 +51,7 @@ export const verticalMovesFromSquare = (board, square, lastMove) => {
   return verticalMoves
 }
 
-export const horizontalMovesFromSquare = (board, square, lastMove) => {
+export const horizontalMovesFromSquare = (board, square) => {
   const horizontalMoves = []
   const black = board[square.y][square.x].startsWith("b")
 

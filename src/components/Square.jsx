@@ -2,13 +2,18 @@ import React from "react"
 import styled from "styled-components"
 import pieces from "./pieces"
 
-const Square = ({ black, piece = "  ", showPlaceholder, handler }) => {
+const Square = ({ black, piece = "  ", showPlaceholder, handler, inCheck }) => {
   const Wrapper = black ? BlackSquare : WhiteSquare
   const Piece = pieces[piece]
 
+  const style = { border: showPlaceholder ? "3px solid blue" : "none" }
+  if (inCheck) {
+    style.backgroundColor = "red"
+  }
+
   return (
     <Wrapper
-      style={{ border: showPlaceholder ? "3px solid blue" : "none" }}
+      style={style}
       onClick={() => {
         if (handler) {
           handler()

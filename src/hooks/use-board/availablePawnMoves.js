@@ -1,6 +1,6 @@
 import { inBounds } from "."
 
-const availablePawnMoves = (board, pawn, lastMove) => {
+const availablePawnMoves = (board, pawn) => {
   const moves = []
   const black = board[pawn.y][pawn.x].startsWith("b")
 

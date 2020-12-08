@@ -1,7 +1,7 @@
 import availableBishopMoves from "./availableBishopMoves"
 import availableRookMoves from "./availableRookMoves"
 
-const availableQueenMoves = (board, queen, lastMove) => {
-  return [...availableRookMoves(board, queen, lastMove), ...availableBishopMoves(board, queen, lastMove)]
+const availableQueenMoves = (board, queen) => {
+  return [...availableRookMoves(board, queen), ...availableBishopMoves(board, queen)]
 }
 export default availableQueenMoves
