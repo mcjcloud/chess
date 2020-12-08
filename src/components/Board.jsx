@@ -58,9 +58,11 @@ const BoardWrapper = styled.div`
 
   display: grid;
   grid-template-rows: repeat(8, 1fr);
-`
-
-const Row = styled.div`
+  overflow: hidden;
+  `
+  
+  const Row = styled.div`
   display: grid;
   grid-template-columns: repeat(8, 1fr);
+  overflow: hidden;
 `
