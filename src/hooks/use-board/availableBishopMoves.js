@@ -8,31 +8,61 @@ const availableBishopMoves = (board, bishop, lastMove) => {
   const ytBound = bishop.y
   const moves = [];
   for (let offset = 1; offset <= xrBound && offset <= ytBound; offset++) {
-    moves.push({ x: bishop.x + offset, y: bishop.y - offset })
-  }
-  for (let offset = 1; offset <= xrBound && offset <= ybBound; offset++) {
-    moves.push({ x: bishop.x + offset, y: bishop.y + offset })
-  }
-  for (let offset = 1; offset <= xlBound && offset <= ybBound; offset++) {
-    moves.push({ x: bishop.x - offset, y: bishop.y + offset })
-  }
-  for (let offset = 1; offset <= xlBound && offset <= ytBound; offset++) {
-    moves.push({ x: bishop.x - offset, y: bishop.y - offset })
-  }
-
-  const bishopMoves = [];
-  for (const move of moves) {
-    const { x, y } = move
-    if (inBounds(move) && board[y][x].startsWith(" ")) {
-      bishopMoves.push(move)
-    } else if (inBounds(move) && board[y][x].startsWith(black ? "w" : "b")) {
-      bishopMoves.push(move)
-      break
-    } else {
-      break
+    const move = { x: bishop.x + offset, y: bishop.y - offset }
+    if (inBounds(move)) {
+      const empty = board[move.y][move.x].startsWith(" ")
+      const oppositePiece = board[move.y][move.x].startsWith(black ? "w" : "b")
+      if (empty || oppositePiece) {
+        moves.push(move)
+      }
+      if (!empty && !oppositePiece) {
+        break
+      }
     }
   }
 
-  return bishopMoves.map(m => [bishop, m])
+  for (let offset = 1; offset <= xrBound && offset <= ybBound; offset++) {
+    const move = { x: bishop.x + offset, y: bishop.y + offset }
+    if (inBounds(move)) {
+      const empty = board[move.y][move.x].startsWith(" ")
+      const oppositePiece = board[move.y][move.x].startsWith(black ? "w" : "b")
+      if (empty || oppositePiece) {
+        moves.push(move)
+      }
+      if (!empty && !oppositePiece) {
+        break
+      }
+    }
+  }
+
+  for (let offset = 1; offset <= xlBound && offset <= ybBound; offset++) {
+    const move = { x: bishop.x - offset, y: bishop.y + offset }
+    if (inBounds(move)) {
+      const empty = board[move.y][move.x].startsWith(" ")
+      const oppositePiece = board[move.y][move.x].startsWith(black ? "w" : "b")
+      if (empty || oppositePiece) {
+        moves.push(move)
+      }
+      if (!empty && !oppositePiece) {
+        break
+      }
+    }
+  }
+
+  for (let offset = 1; offset <= xlBound && offset <= ytBound; offset++) {
+    const move = { x: bishop.x - offset, y: bishop.y - offset }
+    if (inBounds(move)) {
+      const empty = board[move.y][move.x].startsWith(" ")
+      const oppositePiece = board[move.y][move.x].startsWith(black ? "w" : "b")
+      if (empty || oppositePiece) {
+        moves.push(move)
+      }
+      if (!empty && !oppositePiece) {
+        break
+      }
+    }
+  }
+
+  return moves.map(m => [bishop, m])
 }
 export default availableBishopMoves

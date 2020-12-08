@@ -5,7 +5,7 @@ import pieces from "./pieces"
 const Square = ({ black, piece = "  ", showPlaceholder, handler }) => {
   const Wrapper = black ? BlackSquare : WhiteSquare
   const Piece = pieces[piece]
-  console.log({ piece, Piece })
+
   return (
     <Wrapper
       style={{ border: showPlaceholder ? "3px solid blue" : "none" }}
@@ -15,7 +15,7 @@ const Square = ({ black, piece = "  ", showPlaceholder, handler }) => {
         }
       }}
     >
-      {Piece && <Piece viewBox="0 0 100 100" preserveAspectRatio="none" />}
+      {Piece && <Piece viewBox="0 0 45 45" />}
     </Wrapper>
   )
 }

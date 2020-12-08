@@ -10,7 +10,6 @@ const Board = () => {
   const selectPiece = useCallback(
     (square) => {
       const moves = availableMoves(square)
-      console.log({ moves })
       setSelectedMoves(moves)
     },
     [availableMoves]
@@ -22,6 +21,7 @@ const Board = () => {
         return (
           <Row key={`row_${y}`}>
             {row.map((piece, x) => {
+              // console.log({ y, x, selectedMoves })
               const [src] = selectedMoves.find(([, m]) => m.x === x && m.y === y) ?? [undefined]
               return (
                 <Square
@@ -53,8 +53,8 @@ export default Board
 const BoardWrapper = styled.div`
   width: 80vw;
   height: 80vw;
-  max-width: 600px;
-  max-height: 600px;
+  max-width: 80vmin;
+  max-height: 80vmin;
 
   display: grid;
   grid-template-rows: repeat(8, 1fr);
