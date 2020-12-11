@@ -2,13 +2,16 @@ import React from "react"
 import styled from "styled-components"
 import pieces from "./pieces"
 
-const Square = ({ black, piece = "  ", showPlaceholder, handler, inCheck }) => {
+const Square = ({ black, piece = "  ", showPlaceholder, selectable, handler, inCheck }) => {
   const Wrapper = black ? BlackSquare : WhiteSquare
   const Piece = pieces[piece]
 
   const style = { border: showPlaceholder ? "3px solid blue" : "none" }
   if (inCheck) {
     style.backgroundColor = "red"
+  }
+  if (selectable) {
+    style.cursor = "pointer"
   }
 
   return (
@@ -34,10 +37,10 @@ const SquareWrapper = styled.div`
 `
 
 const BlackSquare = styled(SquareWrapper)`
-  background-color: darkgray;
+  background-color: #188FA7;
   color: white;
 `
 const WhiteSquare = styled(SquareWrapper)`
-  background-color: gray;
+  background-color: #d0ceba;
   color: black;
 `

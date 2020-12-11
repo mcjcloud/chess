@@ -4,7 +4,7 @@ import useBoard from "../hooks/use-board"
 import Square from "./Square"
 
 const Board = () => {
-  const { availableMoves, board, movePiece, whiteInCheck, blackInCheck } = useBoard()
+  const { availableMoves, board, movePiece, whiteTurn, whiteInCheck, blackInCheck, whiteInCheckmate, blackInCheckmate } = useBoard()
   const [selectedMoves, setSelectedMoves] = useState([])
 
   const selectPiece = useCallback(
@@ -16,35 +16,40 @@ const Board = () => {
   )
 
   return (
-    <BoardWrapper>
-      {board &&
-        board.map((row, y) => {
-          return (
-            <Row key={`row_${y}`}>
-              {row.map((piece, x) => {
-                const [src] = selectedMoves.find(([, m]) => m.x === x && m.y === y) ?? [undefined]
-                return (
-                  <Square
-                    key={`square_${x}`}
-                    piece={piece}
-                    black={(y % 2 === 0 && x % 2 === 0) || (y % 2 !== 0 && x % 2 !== 0)}
-                    showPlaceholder={src}
-                    inCheck={(piece === "wk" && whiteInCheck) || (piece === "bk" && blackInCheck)}
-                    handler={() => {
-                      if (src) {
-                        movePiece(src, { x, y })
-                        setSelectedMoves([])
-                      } else {
-                        selectPiece({ x, y })
-                      }
-                    }}
-                  />
-                )
-              })}
-            </Row>
-          )
-        })}
-    </BoardWrapper>
+    <div>
+      <pre>{`${blackInCheckmate}`}</pre>
+      <BoardWrapper>
+        {board &&
+          board.map((row, y) => {
+            return (
+              <Row key={`row_${y}`}>
+                {row.map((piece, x) => {
+                  const [src] = selectedMoves.find(([, m]) => m.x === x && m.y === y) ?? [undefined]
+                  return (
+                    <Square
+                      key={`square_${x}`}
+                      piece={piece}
+                      black={(y % 2 === 0 && x % 2 === 0) || (y % 2 !== 0 && x % 2 !== 0)}
+                      showPlaceholder={src}
+                      inCheck={(piece === "wk" && whiteInCheck) || (piece === "bk" && blackInCheck)}
+                      selectable={(whiteTurn && piece.startsWith("w")) || (!whiteTurn && piece.startsWith("b")) || src}
+                      handler={() => {
+                        if (src) {
+                          movePiece(src, { x, y })
+                          setSelectedMoves([])
+                        } else if ((board[y][x].startsWith("w") && whiteTurn) || (board[y][x].startsWith("b") && !whiteTurn)) {
+                          selectPiece({ x, y })
+                        }
+                      }}
+                    />
+                  )
+                })}
+              </Row>
+            )
+          })}
+      </BoardWrapper>
+      <pre>{`${whiteInCheckmate}`}</pre>
+    </div>
   )
 }
 export default Board

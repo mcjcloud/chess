@@ -14,7 +14,6 @@ export const verticalMovesFromSquare = (board, square) => {
 
   for (let y = square.y + 1; y < 8; y++) {
     const dest = { x: square.x, y }
-    console.log({ dest })
     if (!inBounds(dest)) {
       continue
     }
@@ -32,7 +31,6 @@ export const verticalMovesFromSquare = (board, square) => {
   }
   for (let y = square.y - 1; y >= 0; y--) {
     const dest = { x: square.x, y }
-    console.log({ dest })
     if (!inBounds(dest)) {
       continue
     }

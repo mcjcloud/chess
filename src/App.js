@@ -12,5 +12,5 @@ const App = () => {
 export default App;
 
 const AppWrapper = styled.div`
-  background-color: white;
+ 
 `
