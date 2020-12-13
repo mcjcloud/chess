@@ -62,11 +62,11 @@ const SquareWrapper = styled.div`
 `
 
 const BlackSquare = styled(SquareWrapper)`
-  background-color: #188fa7;
+  background-color: #999;
   color: white;
 `
 const WhiteSquare = styled(SquareWrapper)`
-  background-color: #d0ceba;
+  background-color: #eee;
   color: black;
 `
 

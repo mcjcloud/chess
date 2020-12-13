@@ -69,14 +69,17 @@ const Board = ({ board: {
 export default Board
 
 const BoardWrapper = styled.div`
-  width: 80vmin;
-  height: 80vmin;
+  width: 70vmin;
+  height: 70vmin;
   max-width: 1000px;
   max-height: 1000px;
 
   display: grid;
   grid-template-rows: repeat(8, 1fr);
   overflow: hidden;
+  border-radius: 25px;
+  box-shadow: 16px 16px 24px 0 rgba(0, 0, 0, 0.2),
+    -16px -16px 24px 0 rgba(255, 255, 255, 0.5);
 `
 
 const Row = styled.div`
