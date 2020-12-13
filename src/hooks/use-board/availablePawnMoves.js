@@ -1,6 +1,6 @@
 import { inBounds } from "."
 
-const availablePawnMoves = (board, pawn) => {
+const availablePawnMoves = (board, pawn, [lastSrc, lastDest]) => {
   const moves = []
   const black = board[pawn.y][pawn.x].startsWith("b")
 
@@ -36,7 +36,8 @@ const availablePawnMoves = (board, pawn) => {
       continue
     }
     const takingDiagonally = board[move.y][move.x]?.startsWith(black ? "w" : "b") ?? false
-    if (takingDiagonally) {
+    const isEnPassant = !!lastSrc && !!lastDest && board[pawn.y][move.x] === (black ? "wp" : "bp") && lastDest.y === pawn.y && lastDest.x === move.x && Math.abs(lastSrc.y - lastDest.y) === 2
+    if (takingDiagonally || isEnPassant) {
       moves.push([pawn, move])
     }
   }

@@ -23,6 +23,7 @@ const DEFAULT_BOARD = {
 
 const useBoard = () => {
   const [board, setBoard] = useState(DEFAULT_BOARD.squares)
+  const [lastMove, setLastMove] = useState([undefined, undefined])
   const [whiteTurn, setWhiteTurn] = useState(true)
   const [wkMoved, setWKMoved] = useState(false)
   const [wqrMoved, setWQRMoved] = useState(false)
@@ -34,9 +35,11 @@ const useBoard = () => {
   const [blackInCheck, setBlackInCheck] = useState(false)
   const [whiteInCheckmate, setWhiteInCheckmate] = useState(false)
   const [blackInCheckmate, setBlackInCheckmate] = useState(false)
+  const [awaitingPromotion, setAwaitingPromotion] = useState(false)
 
   const evaluateMove = useCallback((src, dest, _board) => {
     const brd = copyBoard(_board ?? board)
+    const black = brd[src.y][src.x].startsWith("b")
     // if a king was moved by more than one then castle
     if (brd[src.y][src.x] === "bk" && src.x - dest.x === 2) {
       brd[0][3] = "br"
@@ -52,6 +55,11 @@ const useBoard = () => {
       brd[7][7] = "  "
     }
 
+    // check en passant
+    if (brd[src.y][dest.x] === (black ? "wp" : "bp") && brd[dest.y][dest.x] === "  ") {
+      brd[src.y][dest.x] = "  "
+    }
+
     brd[dest.y][dest.x] = brd[src.y][src.x]
     brd[src.y][src.x] = "  "
     return brd
@@ -62,7 +70,7 @@ const useBoard = () => {
     const srcPiece = _board[src.y][src.x]
     const moves = (() => {
       switch (srcPiece.charAt(1)) {
-        case "p": return availablePawnMoves(_board, src)
+        case "p": return availablePawnMoves(_board, src, lastMove)
         case "r": return availableRookMoves(_board, src)
         case "n": return availableKnightMoves(_board, src)
         case "b": return availableBishopMoves(_board, src)
@@ -78,7 +86,7 @@ const useBoard = () => {
       return ((wTurn ?? whiteTurn) && !inCheck(brd, "wk")) || (!(wTurn ?? whiteTurn) && !inCheck(brd, "bk"))
     })
     
-  }, [board, evaluateMove, whiteTurn, wkMoved, wqrMoved, wkrMoved, bkMoved, bqrMoved, bkrMoved])
+  }, [board, lastMove, evaluateMove, whiteTurn, wkMoved, wqrMoved, wkrMoved, bkMoved, bqrMoved, bkrMoved])
 
   const inCheckmate = useCallback((brd, code) => {
     for (let y = 0; y < brd.length; y++) {
@@ -119,8 +127,14 @@ const useBoard = () => {
       }
 
       const brd = evaluateMove(src, dest)
-
+      setLastMove([src, dest])
       setBoard(brd)
+      // if a pawn needs to promote, don't switch the turn or evaluate check 
+      if (dest.y === (whiteTurn ? 0 : 7) && brd[dest.y][dest.x] === (whiteTurn ? "wp" : "bp")) {
+        setAwaitingPromotion(true)
+        return
+      }
+
       let checked = false
       if (whiteTurn) {
         setWhiteInCheck(false)
@@ -150,11 +164,51 @@ const useBoard = () => {
     }
   }, [availableMoves, evaluateMove, inCheckmate, whiteTurn])
 
+  const promotePawn = useCallback((src, choice) => {
+    if (!awaitingPromotion) {
+      return
+    }
+
+    const brd = copyBoard(board)
+    brd[src.y][src.x] = choice
+    setBoard(brd)
+
+    let checked = false
+      if (whiteTurn) {
+        setWhiteInCheck(false)
+        checked = inCheck(brd, "bk")
+        setBlackInCheck(checked)
+      } else {
+        setBlackInCheck(false)
+        checked = inCheck(brd, "wk")
+        setWhiteInCheck(checked)
+      }
+
+      // check checkmate
+      if (whiteTurn && checked) {
+        // black is in check
+        const checkmate = inCheckmate(brd, "bk")
+        if (checkmate) {
+          setBlackInCheckmate(true)
+        }
+      } else if (!whiteTurn && checked) {
+        // white is in check
+        if (inCheckmate(brd, "wk")) {
+          setWhiteInCheckmate(true)
+        }
+      }
+
+      setWhiteTurn(!whiteTurn)
+      setAwaitingPromotion(false)
+  }, [awaitingPromotion, board, inCheckmate, whiteTurn])
+
   return {
     availableMoves,
+    awaitingPromotion,
     board,
     whiteTurn,
     movePiece,
+    promotePawn,
     whiteInCheck,
     blackInCheck,
     whiteInCheckmate,
