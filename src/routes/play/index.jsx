@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import Board from "../../components/Board"
+import ControlPanel from "../../components/ControlPanel"
 import useBoard from "../../hooks/use-board"
 
 const PlayRoute = () => {
@@ -9,6 +10,7 @@ const PlayRoute = () => {
   return (
     <Page>
       <Board board={board} />
+      <ControlPanel />
     </Page>
   )
 }

@@ -66,7 +66,7 @@ const BlackSquare = styled(SquareWrapper)`
   color: white;
 `
 const WhiteSquare = styled(SquareWrapper)`
-  background-color: #eee;
+  background-color: #d6d6d6;
   color: black;
 `
 

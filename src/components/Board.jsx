@@ -73,6 +73,8 @@ const BoardWrapper = styled.div`
   height: 70vmin;
   max-width: 1000px;
   max-height: 1000px;
+  background-color: #eee;
+  margin-right: 5rem;
 
   display: grid;
   grid-template-rows: repeat(8, 1fr);
