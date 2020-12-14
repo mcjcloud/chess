@@ -10,7 +10,7 @@ const PlayRoute = () => {
   return (
     <Page>
       <Board board={board} />
-      <ControlPanel />
+      <ControlPanel history={board.history} whiteTurn={board.whiteTurn} />
     </Page>
   )
 }

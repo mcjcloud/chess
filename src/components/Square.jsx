@@ -12,7 +12,7 @@ const Square = ({
   promote,
 }) => {
   const Wrapper = black ? BlackSquare : WhiteSquare
-  const style = { border: showPlaceholder ? "3px solid blue" : "none" }
+  const style = { boxShadow: showPlaceholder ? "inset 6px 6px 10px 0 rgba(0, 0, 0, 0.5), inset -6px -6px 10px 0 rgba(0, 0, 0, 0.5)" : "none" }
   if (inCheck) {
     style.backgroundColor = "red"
   }
@@ -62,7 +62,7 @@ const SquareWrapper = styled.div`
 `
 
 const BlackSquare = styled(SquareWrapper)`
-  background-color: #999;
+  background-color: #474954;
   color: white;
 `
 const WhiteSquare = styled(SquareWrapper)`

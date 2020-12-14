@@ -24,6 +24,7 @@ const DEFAULT_BOARD = {
 const useBoard = () => {
   const [board, setBoard] = useState(DEFAULT_BOARD.squares)
   const [lastMove, setLastMove] = useState([undefined, undefined])
+  const [history, setHistory] = useState([])
   const [whiteTurn, setWhiteTurn] = useState(true)
   const [wkMoved, setWKMoved] = useState(false)
   const [wqrMoved, setWQRMoved] = useState(false)
@@ -129,6 +130,7 @@ const useBoard = () => {
       const brd = evaluateMove(src, dest)
       setLastMove([src, dest])
       setBoard(brd)
+      setHistory([...history, [src, dest]])
       // if a pawn needs to promote, don't switch the turn or evaluate check 
       if (dest.y === (whiteTurn ? 0 : 7) && brd[dest.y][dest.x] === (whiteTurn ? "wp" : "bp")) {
         setAwaitingPromotion(true)
@@ -162,7 +164,7 @@ const useBoard = () => {
 
       setWhiteTurn(!whiteTurn)
     }
-  }, [availableMoves, evaluateMove, inCheckmate, whiteTurn])
+  }, [availableMoves, evaluateMove, history, inCheckmate, whiteTurn])
 
   const promotePawn = useCallback((src, choice) => {
     if (!awaitingPromotion) {
@@ -206,6 +208,7 @@ const useBoard = () => {
     availableMoves,
     awaitingPromotion,
     board,
+    history,
     whiteTurn,
     movePiece,
     promotePawn,
