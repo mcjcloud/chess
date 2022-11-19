@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import Board from "../../components/Board"
 import ControlPanel from "../../components/ControlPanel"
@@ -7,10 +7,14 @@ import { HorriblePlayer, RandomPlayer } from "../../models/player"
 
 const PlayRoute = () => {
   const board = useBoard()
-  const [opponent] = useState(new RandomPlayer("b"), [])
+  // const [opponent] = useState(new RandomPlayer("b"))
+  const [opponent] = useState(undefined)
 
   // detect if the opponent should make a move
   useEffect(() => {
+    if (!opponent) {
+      return
+    }
     ;(async () => {
       if (board.whiteInCheckmate || board.blackInCheckmate) {
         return

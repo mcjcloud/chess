@@ -7,6 +7,7 @@ const availableBishopMoves = (board, bishop) => {
   const ybBound = 8 - bishop.y
   const ytBound = bishop.y
   const moves = [];
+  // check top left diagonal
   for (let offset = 1; offset <= xrBound && offset <= ytBound; offset++) {
     const move = { x: bishop.x + offset, y: bishop.y - offset }
     if (inBounds(move)) {
@@ -21,6 +22,7 @@ const availableBishopMoves = (board, bishop) => {
     }
   }
 
+  // check bottom right diagonal
   for (let offset = 1; offset <= xrBound && offset <= ybBound; offset++) {
     const move = { x: bishop.x + offset, y: bishop.y + offset }
     if (inBounds(move)) {
@@ -35,6 +37,7 @@ const availableBishopMoves = (board, bishop) => {
     }
   }
 
+  // check bottom left diagonal
   for (let offset = 1; offset <= xlBound && offset <= ybBound; offset++) {
     const move = { x: bishop.x - offset, y: bishop.y + offset }
     if (inBounds(move)) {
@@ -49,6 +52,7 @@ const availableBishopMoves = (board, bishop) => {
     }
   }
 
+  // check top left diagonal
   for (let offset = 1; offset <= xlBound && offset <= ytBound; offset++) {
     const move = { x: bishop.x - offset, y: bishop.y - offset }
     if (inBounds(move)) {

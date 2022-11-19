@@ -57,7 +57,7 @@ const useBoard = () => {
     }
 
     // check en passant
-    if (brd[src.y][dest.x] === (black ? "wp" : "bp") && brd[dest.y][dest.x] === "  ") {
+    if (brd[src.y][src.x].endsWith("p") && brd[src.y][dest.x] === (black ? "wp" : "bp") && brd[dest.y][dest.x] === "  ") {
       brd[src.y][dest.x] = "  "
     }
 
@@ -68,6 +68,7 @@ const useBoard = () => {
 
   const availableMoves = useCallback((src, _brd, wTurn) => {
     const _board = _brd ?? board
+    console.log({ _board })
     const srcPiece = _board[src.y][src.x]
     const moves = (() => {
       switch (srcPiece.charAt(1)) {
@@ -84,7 +85,11 @@ const useBoard = () => {
     // perform one last filter to make sure the move does not put you in check
     return moves.filter(([, move]) => {
       const brd = evaluateMove(src, move, _board)
-      return ((wTurn ?? whiteTurn) && !inCheck(brd, "wk")) || (!(wTurn ?? whiteTurn) && !inCheck(brd, "bk"))
+      const res = ((wTurn ?? whiteTurn) && !inCheck(brd, "wk")) || (!(wTurn ?? whiteTurn) && !inCheck(brd, "bk"))
+      if (res) {
+        console.log({ _board, brd, src })
+      }
+      return res
     })
     
   }, [board, lastMove, evaluateMove, whiteTurn, wkMoved, wqrMoved, wkrMoved, bkMoved, bqrMoved, bkrMoved])

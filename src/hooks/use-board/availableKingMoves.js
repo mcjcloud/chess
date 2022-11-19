@@ -29,10 +29,7 @@ const availableKingMoves = (board, king, dependencies) => {
 
   return moves.filter((move) => {
     const { x, y } = move
-    if (inBounds(move) && (board[y][x].startsWith(black ? "w" : "b") || board[y][x].startsWith(" "))) {
-      return true
-    }
-    return false
+    return inBounds(move) && (board[y][x].startsWith(black ? "w" : "b") || board[y][x].startsWith(" "))
   }).map(m => [king, m])
 }
 export default availableKingMoves
