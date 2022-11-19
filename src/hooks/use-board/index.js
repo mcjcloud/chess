@@ -77,7 +77,6 @@ const useBoard = () => {
   const availableMoves = useCallback(
     (src, _brd, wTurn) => {
       const _board = _brd ?? board
-      console.log({ _board })
       const srcPiece = _board[src.y][src.x]
       const moves = (() => {
         switch (srcPiece.charAt(1)) {
@@ -111,9 +110,6 @@ const useBoard = () => {
         const res =
           ((wTurn ?? whiteTurn) && !inCheck(brd, "wk")) ||
           (!(wTurn ?? whiteTurn) && !inCheck(brd, "bk"))
-        if (res) {
-          console.log({ _board, brd, src })
-        }
         return res
       })
     },

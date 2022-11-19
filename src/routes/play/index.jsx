@@ -3,27 +3,28 @@ import styled from "styled-components"
 import Board from "../../components/Board"
 import ControlPanel from "../../components/ControlPanel"
 import useBoard from "../../hooks/use-board"
-import { HorriblePlayer, RandomPlayer } from "../../models/player"
+import { GreedyPlayer } from "../../models/player"
 
 const PlayRoute = () => {
   const board = useBoard()
-  // const [opponent] = useState(new RandomPlayer("b"))
-  const [opponent] = useState(undefined)
+  const [opponent] = useState(new GreedyPlayer("b"))
+  // const [opponent] = useState(undefined)
 
   // detect if the opponent should make a move
   useEffect(() => {
     if (!opponent) {
       return
     }
+    if (board.whiteInCheckmate || board.blackInCheckmate) {
+      return
+    }
+    if ((board.whiteTurn && opponent !== "w") || (!board.whiteTurn && opponent === "w")) {
+      return
+    }
     ;(async () => {
-      if (board.whiteInCheckmate || board.blackInCheckmate) {
-        return
-      }
-      if ((board.whiteTurn && opponent !== "w") || (!board.whiteTurn && opponent === "w")) {
-        return
-      }
-
-      const [src, dest] = await opponent.selectMove(board.board, board.allAvailableMoves())
+      const selectedMove = await opponent.selectMove(board.board, board.allAvailableMoves())
+      console.log("moving piece")
+      const [src, dest] = selectedMove
       board.movePiece(src, dest)
     })()
   }, [board.whiteTurn, board.whiteInCheckmate, board.blackInCheckmate])
