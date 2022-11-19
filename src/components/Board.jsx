@@ -40,11 +40,11 @@ const Board = ({ board: {
                       key={`square_${x}`}
                       promote={promotingPawn}
                       piece={piece}
-                      black={(y % 2 === 0 && x % 2 === 0) || (y % 2 !== 0 && x % 2 !== 0)}
+                      black={(y % 2 === 0 && x % 2 !== 0) || (y % 2 !== 0 && x % 2 === 0)}
                       showPlaceholder={src}
                       inCheck={(piece === "wk" && whiteInCheck) || (piece === "bk" && blackInCheck)}
                       selectable={(pieceTurn && awaitingPromotion && promotingPawn) || (pieceTurn && !awaitingPromotion)}
-                      handler={(choice) => {
+                      promotionHandler={(choice) => {
                         if (choice) {
                           promotePawn({ x, y }, whiteTurn ? `w${choice}` : `b${choice}`)
                           return

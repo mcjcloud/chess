@@ -89,6 +89,25 @@ const useBoard = () => {
     
   }, [board, lastMove, evaluateMove, whiteTurn, wkMoved, wqrMoved, wkrMoved, bkMoved, bqrMoved, bkrMoved])
 
+  const allAvailableMoves = useCallback((_brd) => {
+    const _board = _brd ?? board
+    let allMoves = []
+    for (let y = 0; y < _board.length; y++) {
+      for (let x = 0; x < _board[y].length; x++) {
+        if (whiteTurn && !_board[y][x].startsWith("w")) {
+          continue
+        }
+        if (!whiteTurn && !_board[y][x].startsWith("b")) {
+          continue
+        }
+
+        allMoves = [...allMoves, ...availableMoves({ x, y })]
+      }
+    }
+
+    return allMoves
+  }, [board, whiteTurn, availableMoves])
+
   const inCheckmate = useCallback((brd, code) => {
     for (let y = 0; y < brd.length; y++) {
       for (let x = 0; x < brd.length; x++) {
@@ -206,6 +225,7 @@ const useBoard = () => {
 
   return {
     availableMoves,
+    allAvailableMoves,
     awaitingPromotion,
     board,
     history,

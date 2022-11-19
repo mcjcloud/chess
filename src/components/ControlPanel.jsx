@@ -1,12 +1,13 @@
-import React, { useCallback, useEffect } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
 import { useTimer } from "react-timer-hook"
+import { notationForMove } from "../util/coordinate"
 
 /*
  * should contain: move list, prev/next move, timer, resign, draw
  */
 
-const ControlPanel = ({ history = [], play, whiteTurn }) => {
+const ControlPanel = ({ board }) => {
   const time = new Date()
   time.setSeconds(time.getSeconds() + 600) // 10 minutes
   const {
@@ -36,19 +37,56 @@ const ControlPanel = ({ history = [], play, whiteTurn }) => {
     },
   })
 
+  const [history, setHistory] = useState([])
+  const [lastBoard, setLastBoard] = useState(board.board)
+  const [anchor, setAnchor] = useState()
+  
+  // update history every time a move is made
+  useEffect(() => {
+    if (board.history.length === 0) {
+      return
+    }
+    if (board.history.length === history.length) {
+      return
+    }
+
+    const [src, dest] = board.history[board.history.length - 1]
+    const piece = board.board[dest.y][dest.x]
+    const takes = lastBoard[dest.y][dest.x] !== "  "
+    const promotion = lastBoard[src.y][src.x].endsWith("p") && (dest.y === 7 || dest.y === 0)
+
+    // skip updating the history if the promoted piece hasn't been chosen yet
+    if (promotion && piece.endsWith("p")) {
+      return
+    }
+
+    setHistory([...history, notationForMove(src, dest, piece, takes, promotion)])
+    setLastBoard(board.board)
+
+    if (anchor) {
+      anchor.scrollIntoView()
+    }
+  }, [board.history, board.board])
+
   const toggleTimer = useCallback(() => {
+    if (board.whiteInCheckmate || board.blackInCheckmate || board.history.length === 0) {
+      bPause()
+      wPause()
+      return
+    }
+
     if ((wMinutes === 0 && wSeconds === 0) || (bMinutes === 0 && bSeconds === 0)) {
       return
     }
-    if (whiteTurn && !wIsRunning) {
+    if (board.whiteTurn && !wIsRunning) {
       bPause()
       wResume()
-    } else if (!whiteTurn && !bIsRunning) {
+    } else if (!board.whiteTurn && !bIsRunning) {
       wPause()
       bResume()
     }
   }, [
-    whiteTurn,
+    board.whiteTurn,
     wIsRunning,
     bIsRunning,
     wPause,
@@ -63,7 +101,7 @@ const ControlPanel = ({ history = [], play, whiteTurn }) => {
 
   useEffect(() => {
     toggleTimer()
-  }, [whiteTurn, toggleTimer])
+  }, [board.whiteTurn, toggleTimer])
 
   useEffect(() => {
     if (wIsRunning && bIsRunning) {
@@ -84,11 +122,19 @@ const ControlPanel = ({ history = [], play, whiteTurn }) => {
       </TimerWrapper>
 
       <MovesWrapper>
-        {history.map(([src, dest], i) => (
-          <div key={i}>
-            {JSON.stringify(src)} {JSON.stringify(dest)}
-          </div>
+        {history.map((move, i) => (
+          <>
+            {i % 2 === 0 && (
+              <Move key={`n${i}`}>
+                {(i / 2) + 1}.
+              </Move>
+            )}
+            <Move key={i}>
+              {move}
+            </Move>
+          </>
         ))}
+        <div ref={setAnchor}></div>
       </MovesWrapper>
 
       <ControlsWrapper></ControlsWrapper>
@@ -140,6 +186,18 @@ const MovesWrapper = styled.div`
   flex: 1;
   margin: 24px 0;
   padding: 0 24px;
+
+  display: grid;
+  grid-template-columns: 1fr 4fr 4fr;
+  grid-auto-rows: 50px;
+
+  overflow: auto;
+`
+
+const Move = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 const ControlsWrapper = styled.div`

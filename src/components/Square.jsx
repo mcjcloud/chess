@@ -7,7 +7,7 @@ const Square = ({
   piece = "  ",
   showPlaceholder,
   selectable,
-  handler,
+  promotionHandler,
   inCheck,
   promote,
 }) => {
@@ -29,10 +29,10 @@ const Square = ({
     return (
       <Wrapper style={style} onClick={() => {}}>
         <PromotionSquare>
-          <Rook viewBox="0 0 45 45" onClick={() => handler && handler("r")} />
-          <Knight viewBox="0 0 45 45" onClick={() => handler && handler("n")} />
-          <Bishop viewBox="0 0 45 45" onClick={() => handler && handler("b")} />
-          <Queen viewBox="0 0 45 45" onClick={() => handler && handler("q")} />
+          <Rook viewBox="0 0 45 45" onClick={() => promotionHandler && promotionHandler("r")} />
+          <Knight viewBox="0 0 45 45" onClick={() => promotionHandler && promotionHandler("n")} />
+          <Bishop viewBox="0 0 45 45" onClick={() => promotionHandler && promotionHandler("b")} />
+          <Queen viewBox="0 0 45 45" onClick={() => promotionHandler && promotionHandler("q")} />
         </PromotionSquare>
       </Wrapper>
     )
@@ -43,8 +43,8 @@ const Square = ({
     <Wrapper
       style={style}
       onClick={() => {
-        if (selectable && handler) {
-          handler()
+        if (selectable && promotionHandler) {
+          promotionHandler()
         }
       }}
     >
