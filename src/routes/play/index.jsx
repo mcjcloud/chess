@@ -7,8 +7,8 @@ import { GreedyPlayer } from "../../models/player"
 
 const PlayRoute = () => {
   const board = useBoard()
-  // const [opponent] = useState(new GreedyPlayer("b"))
-  const [opponent] = useState(undefined)
+  const [opponent] = useState(new GreedyPlayer("b"))
+  // const [opponent] = useState(undefined)
 
   // detect if the opponent should make a move
   useEffect(() => {
