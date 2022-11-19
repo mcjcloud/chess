@@ -78,6 +78,11 @@ const useBoard = () => {
     (src, _brd, wTurn) => {
       const _board = _brd ?? board
       const srcPiece = _board[src.y][src.x]
+
+      if (srcPiece.startsWith(whiteTurn ? "b" : "w")) {
+        return []
+      }
+
       const moves = (() => {
         switch (srcPiece.charAt(1)) {
           case "p":
@@ -106,11 +111,27 @@ const useBoard = () => {
 
       // perform one last filter to make sure the move does not put you in check
       return moves.filter(([, move]) => {
+        // check if this is a king castle through check
+        const piece = _board[src.y][src.x]
+        if (piece.endsWith("k")) {
+          if ((whiteTurn && whiteInCheck) || (!whiteTurn && blackInCheck)) {
+            return false
+          }
+
+          if (Math.abs(move.x - src.x) > 1) {
+            const direction = move.x - src.x > 0 ? -1 : 1
+            const middleState = evaluateMove(src, { ...move, x: move.x + direction })
+            if (inCheck(middleState, whiteTurn ? "wk" : "bk")) {
+              return false
+            }
+          }
+        }
+
         const brd = evaluateMove(src, move, _board)
-        const res =
+        return (
           ((wTurn ?? whiteTurn) && !inCheck(brd, "wk")) ||
           (!(wTurn ?? whiteTurn) && !inCheck(brd, "bk"))
-        return res
+        )
       })
     },
     [
@@ -169,6 +190,7 @@ const useBoard = () => {
   const movePiece = useCallback(
     (src, dest) => {
       const moves = availableMoves(src)
+      console.log({ src, dest, moves })
       if (moves.some(([, m]) => m.x === dest.x && m.y === dest.y)) {
         // check if the piece moved is the king from the king square or rook from the rook square
         if (src.y === 0 && src.x === 4) {
@@ -192,6 +214,7 @@ const useBoard = () => {
         }
 
         const brd = evaluateMove(src, dest)
+        console.log({ brd })
         setLastMove([src, dest])
         setBoard(brd)
         setHistory([...history, [src, dest]])
