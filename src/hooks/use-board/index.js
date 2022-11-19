@@ -111,19 +111,17 @@ const useBoard = () => {
 
       // perform one last filter to make sure the move does not put you in check
       return moves.filter(([, move]) => {
-        // check if this is a king castle through check
+        // check if this is a castle through check
         const piece = _board[src.y][src.x]
-        if (piece.endsWith("k")) {
+        if (piece.endsWith("k") && Math.abs(move.x - src.x) > 1) {
           if ((whiteTurn && whiteInCheck) || (!whiteTurn && blackInCheck)) {
             return false
           }
 
-          if (Math.abs(move.x - src.x) > 1) {
-            const direction = move.x - src.x > 0 ? -1 : 1
-            const middleState = evaluateMove(src, { ...move, x: move.x + direction })
-            if (inCheck(middleState, whiteTurn ? "wk" : "bk")) {
-              return false
-            }
+          const direction = move.x - src.x > 0 ? -1 : 1
+          const middleState = evaluateMove(src, { ...move, x: move.x + direction })
+          if (inCheck(middleState, whiteTurn ? "wk" : "bk")) {
+            return false
           }
         }
 
