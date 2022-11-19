@@ -47,8 +47,6 @@ export class GreedyPlayer {
     for (let [src, dest] of availableMoves) {
       let square = board[dest.y][dest.x]
       if (square.startsWith(this.color === "w" ? "b" : "w")) {
-        console.log({ availableMoves, dest, board, pieceValues })
-
         const piece = square.charAt(1)
         if (pieceValues[piece] > value) {
           value = pieceValues[square.charAt(1)]
@@ -57,7 +55,6 @@ export class GreedyPlayer {
       }
     }
 
-    console.log({ bestMove })
     return bestMove
   }
 }

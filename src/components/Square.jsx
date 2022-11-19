@@ -21,7 +21,6 @@ const Square = ({
     () => ({
       accept: "piece",
       drop: (item) => {
-        console.log({ x, y, item })
         movePiece(item, { x, y })
       },
       collect: (monitor) => ({

@@ -168,27 +168,9 @@ const useBoard = () => {
     [board, whiteTurn, availableMoves]
   )
 
-  const inCheckmate = useCallback(
-    (brd, code) => {
-      for (let y = 0; y < brd.length; y++) {
-        for (let x = 0; x < brd.length; x++) {
-          if (brd[y][x].startsWith(code[0])) {
-            const moves = availableMoves({ x, y }, brd, code.startsWith("w"))
-            if (moves.length > 0) {
-              return false
-            }
-          }
-        }
-      }
-      return true
-    },
-    [availableMoves]
-  )
-
   const movePiece = useCallback(
     (src, dest) => {
       const moves = availableMoves(src)
-      console.log({ src, dest, moves })
       if (moves.some(([, m]) => m.x === dest.x && m.y === dest.y)) {
         // check if the piece moved is the king from the king square or rook from the rook square
         if (src.y === 0 && src.x === 4) {
@@ -212,7 +194,6 @@ const useBoard = () => {
         }
 
         const brd = evaluateMove(src, dest)
-        console.log({ brd })
         setLastMove([src, dest])
         setBoard(brd)
         setHistory([...history, [src, dest]])
@@ -234,23 +215,14 @@ const useBoard = () => {
         }
 
         // check checkmate
-        if (whiteTurn && checked) {
-          // black is in check
-          const checkmate = inCheckmate(brd, "bk")
-          if (checkmate) {
-            setBlackInCheckmate(true)
-          }
-        } else if (!whiteTurn && checked) {
-          // white is in check
-          if (inCheckmate(brd, "wk")) {
-            setWhiteInCheckmate(true)
-          }
-        }
+        const checkmate = allAvailableMoves(brd).length === 0
+        setWhiteInCheckmate(checkmate && whiteTurn)
+        setBlackInCheckmate(checkmate && !whiteTurn)
 
         setWhiteTurn(!whiteTurn)
       }
     },
-    [availableMoves, evaluateMove, history, inCheckmate, whiteTurn]
+    [availableMoves, evaluateMove, history, whiteTurn]
   )
 
   const promotePawn = useCallback(
@@ -275,23 +247,14 @@ const useBoard = () => {
       }
 
       // check checkmate
-      if (whiteTurn && checked) {
-        // black is in check
-        const checkmate = inCheckmate(brd, "bk")
-        if (checkmate) {
-          setBlackInCheckmate(true)
-        }
-      } else if (!whiteTurn && checked) {
-        // white is in check
-        if (inCheckmate(brd, "wk")) {
-          setWhiteInCheckmate(true)
-        }
-      }
+      const checkmate = allAvailableMoves(brd) === 0
+      setWhiteInCheckmate(checkmate && whiteTurn)
+      setBlackInCheckmate(checkmate && !whiteTurn)
 
       setWhiteTurn(!whiteTurn)
       setAwaitingPromotion(false)
     },
-    [awaitingPromotion, board, inCheckmate, whiteTurn]
+    [awaitingPromotion, board, whiteTurn]
   )
 
   return {
